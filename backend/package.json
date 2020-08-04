@@ -11,11 +11,15 @@
     "@babel/core": "^7.11.0",
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "sequelize-cli": "^6.2.0"
   },
   "dependencies": {
+    "argon2": "^0.26.2",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^6.3.4"
   }
 }
