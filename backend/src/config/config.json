@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "divided",
-    "password": "divided",
+    "username": "root",
+    "password": "root",
     "database": "divided",
     "host": "127.0.0.1",
     "dialect": "mysql"

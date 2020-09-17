@@ -11,7 +11,6 @@ const getTokenFromHeader = (req) => {
   }
 };
 
-
 const verifyToken = (req, res, next) => {
   const token = getTokenFromHeader(req);
   if(!token) {

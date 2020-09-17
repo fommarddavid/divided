@@ -1,0 +1,155 @@
+import axios from 'axios';
+
+import {
+  getUserDatas,
+} from '../actions/auth';
+
+import {
+  LOAD_GROUPS,
+  getGroups,
+  LOAD_GROUP_DETAILS,
+  getGroupDetails,
+  ADD_NEW_GROUP,
+  setGroupIsAdded,
+  DELETE_GROUP,
+  setGroupIsDeleted,
+  ADD_NEW_MEMBER,
+  setNewMemberIsAdded,
+  ADD_NEW_EXPENSE,
+} from '../actions/groups';
+
+const groupsMiddleware = (store) => (next) => (action) => {
+  switch (action.type) {
+    case LOAD_GROUPS: {
+      const token = sessionStorage.getItem('token');
+      axios
+        .get('http://localhost:3000/api/groups', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          // console.log('LOAD_GROUPS : ', response.data);
+          store.dispatch(getUserDatas(response.data.email, response.data.username));
+          store.dispatch(getGroups(response.data.groups));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      break;
+    }
+    case LOAD_GROUP_DETAILS: {
+      const state = store.getState();
+      const token = sessionStorage.getItem('token');
+      axios
+        .get(`http://localhost:3000/api/groups/${state.groups.selectedId}/details`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          console.log('LOAD_GROUP_DETAILS ', response.data);
+          store.dispatch(getGroupDetails(
+            response.data.groupName,
+            response.data.members,
+            response.data.expenses,
+            response.data.totalExpense,
+            response.data.perPaxExpense,
+          ));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      break;
+    }
+    case ADD_NEW_GROUP: {
+      const state = store.getState();
+      const token = sessionStorage.getItem('token');
+      // console.log(token);
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/api/groups',
+        data: {
+          name: state.groups.groupName,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log('ADD_NEW_GROUP', response.data);
+        store.dispatch(setGroupIsAdded(false));
+      }).catch((error) => {
+        console.log(error);
+      });
+      break;
+    }
+    case DELETE_GROUP: {
+      const state = store.getState();
+      const token = sessionStorage.getItem('token');
+      const groupId = state.groups.selectedId;
+      axios({
+        method: 'delete',
+        url: `http://localhost:3000/api/groups/${groupId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log('DELETE_GROUP', response.data);
+        store.dispatch(setGroupIsDeleted(false));
+      }).catch((error) => {
+        console.log(error);
+      });
+      break;
+    }
+    case ADD_NEW_MEMBER: {
+      const state = store.getState();
+      const token = sessionStorage.getItem('token');
+      const groupId = state.groups.selectedId;
+      axios({
+        method: 'post',
+        url: `http://localhost:3000/api/groups/${groupId}/members`,
+        data: {
+          name: state.groups.newMemberName,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log('ADD_NEW_MEMBER', response.data);
+        store.dispatch(setNewMemberIsAdded(false));
+      }).catch((error) => {
+        console.log(error);
+      });
+      break;
+    }
+    case ADD_NEW_EXPENSE: {
+      const state = store.getState();
+      const token = sessionStorage.getItem('token');
+      const groupId = state.groups.selectedId;
+      axios({
+        method: 'post',
+        url: `http://localhost:3000/api/groups/${groupId}/expenses`,
+        data: {
+          newExpenseName: state.groups.newExpenseName,
+          newExpenseValue: state.groups.newExpenseValue,
+          memberId: state.groups.newExpensePayer,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then((response) => {
+        console.log('ADD_NEW_EXPENSE', response.data);
+        store.dispatch(setNewMemberIsAdded(false));
+      }).catch((error) => {
+        console.log(error);
+      });
+      break;
+    }
+    default:
+      break;
+  }
+  // On passe au suivant
+  next(action);
+};
+
+export default groupsMiddleware;

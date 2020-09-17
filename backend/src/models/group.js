@@ -17,12 +17,15 @@ module.exports = (sequelize, DataTypes) => {
       });
       Group.hasMany(models.Member, {
         foreignKey: 'groupId',
-      })
+      });
+      Group.hasMany(models.Expense, {
+        foreignKey: 'groupId',
+      });
     }
   };
   Group.init({
     name: DataTypes.STRING,
-    userId: DataTypes.INTEGER,
+    userId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Group',

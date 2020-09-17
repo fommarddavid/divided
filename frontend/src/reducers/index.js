@@ -1,9 +1,13 @@
 import { combineReducers } from 'redux';
 
-import demoReducer from './demo';
+// import demoReducer from './demo';
+import authReducer from './auth';
+import groupsReducer from './groups';
 
 const rootReducer = combineReducers({
-  demo: demoReducer,
+  // demo: demoReducer,
+  auth: authReducer,
+  groups: groupsReducer,
   // ... autres reducers
 });
 

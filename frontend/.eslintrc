@@ -32,7 +32,8 @@
     "react/no-unescaped-entities": "off",
     "react/jsx-props-no-spreading": "off",
     "react/state-in-constructor": "off",
-    "linebreak-style": ["error", "windows"]
+    "linebreak-style": ["error", "windows"],
+    "import/no-unresolved": 2
   },
   "settings": {
     "import/resolver": {
@@ -40,7 +41,8 @@
         "extensions": [".js"],
         "map": [
           ["src", "./src"],
-          ["app", "./src"]
+          ["src", "../src"],
+          ["src", "../../src"]
         ]
       }
     }
