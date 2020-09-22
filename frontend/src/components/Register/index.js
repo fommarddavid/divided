@@ -28,6 +28,7 @@ const Register = ({
         name="username"
         value={username}
         onChange={handleChange}
+        autoComplete="off"
       />
       <input
         className="form-input"
@@ -36,6 +37,7 @@ const Register = ({
         name="email"
         value={email}
         onChange={handleChange}
+        autoComplete="off"
       />
       <input
         className="form-input"
@@ -44,6 +46,7 @@ const Register = ({
         name="password"
         value={password}
         onChange={handleChange}
+        autoComplete="off"
       />
       <input
         className="form-input"
@@ -52,6 +55,7 @@ const Register = ({
         name="confirmedPassword"
         value={confirmedPassword}
         onChange={handleChange}
+        autoComplete="off"
       />
       <button className="form-button" type="submit">S'enregistrer</button>
       <div className="form-links">

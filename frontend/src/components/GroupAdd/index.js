@@ -25,6 +25,7 @@ const GroupAdd = ({
         name="groupName"
         value={groupName}
         onChange={handleChange}
+        autoComplete="off"
       />
       <button className="form-button" type="submit">Ajouter</button>
       <div className="form-links">

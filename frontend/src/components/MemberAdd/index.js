@@ -25,6 +25,7 @@ const MemberAdd = ({
         name="newMemberName"
         value={newMemberName}
         onChange={handleChange}
+        autoComplete="off"
       />
       <button className="form-button" type="submit">Ajouter</button>
       <div className="form-links">

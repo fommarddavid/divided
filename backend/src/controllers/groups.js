@@ -1,4 +1,5 @@
 import jwt, { decode } from 'jsonwebtoken';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Group, Member, Expense } from '../models';
 import middlewares from '../middlewares';
@@ -13,6 +14,7 @@ const getGroups = async(req, res) => {
       userId: decoded.id
     }
   });
+  // console.log(JSON.stringify(groups));
 
   res.status(200).json({
     email: decoded.email,
@@ -56,58 +58,145 @@ const getDetails = async(req, res) => {
   const token = middlewares.auth.getTokenFromHeader(req);
   const decoded = jwt.decode(token);
 
-  try{
-    const group = await Group.findOne({
-      where: {
-        id: req.params.groupId,
-        userId: decoded.id
+  const group = await Group.findOne({
+    where: {
+      id: req.params.groupId,
+      userId: decoded.id
+    },
+    include: [
+      {
+        model: Member,
+        attributes: ['id','name'],
+      },
+      {
+        model: Expense,
+        attributes: ['id','name', 'value', 'memberId'],
       }
-    });
+    ]
+  });
+  // console.log('Group : ', JSON.stringify(group));
 
-    const members = await Member.findAll({
-      attributes: ['id','name'],
-      where: {
-        groupId: req.params.groupId,
-        userId: decoded.id,
+  const getMemberName = (id) => (
+    group.Members.find((member) => (id === member.id)).name
+  );
+
+  const expensesToSend = group.Expenses.map((expense) => ({
+    ...expense,
+    memberId: getMemberName(expense.memberId)
+  }));
+
+  const totalExpense = await Expense.sum('value', {
+    where: {
+      groupId: req.params.groupId,
+    }
+  });
+
+  const perPaxExpense = totalExpense/group.Members.length;
+  // console.log('perPaxExpense: ', perPaxExpense);
+
+  const members = group.Members;
+  const balances = await Promise.all(members.map(async(member) => {
+    return {
+      memberId: member.id,
+      memberName: getMemberName(member.id),
+      memberExpense: await Expense.sum('value', { where: { memberId: member.id } }),
+      balance: await Expense.sum('value', { where: { memberId: member.id } }) - perPaxExpense,
+    }
+  }));
+  // console.log('balances: ', balances);
+  // console.log('reduce : ', balances.reduce((a, b) => (a + b, 0)));
+
+  const getDebts = (balances) => {
+    const negBalances = balances.filter((member) => (member.balance < 0)).sort((a, b) => (a.balance - b.balance));
+    // console.log('negBalances: ', negBalances);
+    const posBalances = balances.filter((member) => (member.balance >= 0)).sort((a, b) => (a.balance - b.balance));
+    // console.log('posBalances: ', posBalances);
+
+    if(posBalances.length === 1) {
+      const [lender] = posBalances;
+      return negBalances.map((m) => ({
+        id: uuidv4(),
+        borrower: m.memberName,
+        value: Math.abs(m.balance),
+        lender: lender.memberName
+      }))
+    }
+    if(negBalances.length === 1) {
+      const [borrower] = negBalances;
+      return posBalances.map((m) => ({
+        id: uuidv4(),
+        borrower: borrower.memberName,
+        value: m.balance,
+        lender: m.memberName
+      }))
+    }
+    if(negBalances.length > 1 && posBalances.length > 1) {
+      const debts = [];
+      let i = 0;
+      while(posBalances.length !== 1) {
+        // console.log('i: ', i);
+        const min = Math.min(Math.abs(negBalances[0].balance), posBalances[0].balance);
+        // console.log('min: ', min);
+        debts[i] = {
+          id: uuidv4(),
+          borrower: negBalances[0].memberName,
+          value: min,
+          lender: posBalances[0].memberName,
+        };
+        // console.log('debts: ', debts);
+        if( min === posBalances[0].balance) {
+          negBalances[0] = {
+            memberId: negBalances[0].memberId,
+            memberName: negBalances[0].memberName,
+            memberExpense: negBalances[0].memberExpense + min,
+            balance: negBalances[0].balance + min
+          };
+          posBalances.splice(0, 1);
+        } else {
+          negBalances.splice(0, 1);
+          posBalances[0] = {
+            memberId: posBalances[0].memberId,
+            memberName: posBalances[0].memberName,
+            memberExpense: posBalances[0].memberExpense - min,
+            balance: posBalances[0].balance - min
+          };
+        }
+        
+        // console.log('negBalances: ', negBalances);
+        // console.log('posBalances: ', posBalances);
+        i++;
       }
-    });
-    // console.log(members);
 
-    const expenses = await Expense.findAll({
-      attributes: ['id','name', 'value', 'memberId'],
-      where: {
-        groupId: req.params.groupId,
+      const [lastLender] = posBalances;
+      for(let i = 0; i < negBalances.length; i++ ) {
+        debts.push({
+          id: uuidv4(),
+          borrower: negBalances[i].memberName,
+          value: Math.abs(negBalances[i].balance),
+          lender: lastLender.memberName,
+        })
       }
-    });
-    console.log(expenses);
-    const getMemberName = (id) => (
-      members.find((member) => (id === member.id)).name
-    );
-
-    const expensesToSend = expenses.map((expense) => ({
-      ...expense,
-      memberId: getMemberName(expense.memberId)
-    }));
-
-    const totalExpense = await Expense.sum('value', {
-      where: {
-        groupId: req.params.groupId,
+      // console.log(debts);
+      for (const index in debts) {
+        if(debts[index].value === 0) {
+          debts.splice(index, 1);
+        }
       }
-    });
-    const perPaxExpense = totalExpense/members.length;
-
-    res.json({
-      groupName: group.name,
-      members: members,
-      expenses: expensesToSend,
-      totalExpense: totalExpense,
-      perPaxExpense: perPaxExpense,
-    });
-  } catch(error){
-    return res.status(400).json({
-      message: 'access denied'
-    });
+      return debts;
+    }
   }
+  const debts = getDebts(balances);
+  //console.log('debts: ', debts);
+
+  res.json({
+    groupName: group.name,
+    members: group.Members,
+    expenses: expensesToSend,
+    totalExpense: totalExpense,
+    perPaxExpense: perPaxExpense,
+    balances: balances,
+    debts: (debts === undefined) ? [] : debts,
+  });
 }
 
 const setMembers = async(req, res) => {
@@ -173,8 +262,15 @@ const setExpenses = async(req, res) => {
   const group = await Group.findOne({
     where: {
       id: req.params.groupId
-    }
+    },
+    include: [
+      {
+        model: Member,
+        attributes: ['id','name'],
+      }
+    ]
   });
+  // console.log(JSON.stringify(group));
 
   const newExpense = await Expense.create({
     name: newExpenseName,

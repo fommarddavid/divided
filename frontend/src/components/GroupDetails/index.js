@@ -15,10 +15,11 @@ const GroupDetails = ({
   newMemberIsAdded,
   setNewMemberIsAdded,
   groupName,
-  members,
   expenses,
   totalExpense,
   perPaxExpense,
+  balances,
+  debts,
   getGroupDetails,
 }) => {
   useEffect(() => {
@@ -33,37 +34,37 @@ const GroupDetails = ({
   }, []);
 
   const handleClick = () => {
-    getGroupDetails('', [], [], 0, 0);
+    getGroupDetails('', [], [], 0, 0, [], []);
   };
 
-  const getMemberExpenses = (id) => (
+  /*
+    const getMemberExpenses = (id) => (
     expenses.filter((expense) => (expense.dataValues.memberId === id))
   );
 
   const getSumMemberExpenses = (id) => (
     getMemberExpenses(id).reduce((a, b) => a + b.dataValues.value, 0)
   );
-  console.log('getSumMemberExpenses(5): ', getSumMemberExpenses(5));
-  console.log('getSumMemberExpenses(6): ', getSumMemberExpenses(6));
-  console.log('getSumMemberExpenses(7): ', getSumMemberExpenses(7));
-  console.log('getSumMemberExpenses(8): ', getSumMemberExpenses(8));
+
   const getMemberBalance = (id) => (
     (getSumMemberExpenses(id) - perPaxExpense).toFixed(2)
-  );
+  ); */
 
-  const newMembers = members.map((member) => ({
+  /*   const newMembers = members.map((member) => ({
     ...member,
     balance: getMemberBalance(member.id),
-  })).sort((a, b) => (a.balance - b.balance));
+  })).sort((a, b) => (a.balance - b.balance)); */
 
-  console.log(newMembers);
+  console.log(balances);
+  console.log(debts);
 
+  /*
   const negBalanceMembers = newMembers.filter((member) => (member.balance <= 0));
   console.log('negBalanceMembers: ', negBalanceMembers);
   const posBalanceMembers = newMembers.filter((member) => (member.balance > 0));
   console.log('posBalanceMembers: ', posBalanceMembers);
   const sum = posBalanceMembers.reduce((a, b) => a + Number(b.balance), 0);
-  console.log(sum);
+  console.log(sum); */
 
   return (
     <GroupDetailsStyle>
@@ -78,13 +79,13 @@ const GroupDetails = ({
             <div>Balances</div>
           </h1>
           <ul className="group-member-list">
-            {members.map((member) => (
-              <li key={member.id} className="group-member-list-item">
+            {balances.map((member) => (
+              <li key={member.memberId} className="group-member-list-item">
                 <div className="group-member-list-item-name">
-                  {member.name}
+                  {member.memberName}
                 </div>
                 <div className="group-member-list-item-balance">
-                  {getMemberBalance(member.id)}
+                  {member.balance.toFixed(2)} €
                 </div>
               </li>
             ))}
@@ -128,39 +129,16 @@ const GroupDetails = ({
         <div className="group-debt">
           <h1 className="group-debt-title">Dettes</h1>
           <ul className="group-debt-details">
-            {negBalanceMembers.length === 1 && (
-              posBalanceMembers.map((member) => (
-                <li key={member.id}>
-                  {negBalanceMembers[0].name} doit {member.balance} € à {member.name}
-                </li>
-              ))
-            )}
-            {posBalanceMembers.length === 1 && (
-              negBalanceMembers.map((member) => (
-                <li key={member.id}>
-                  {member.name} doit {member.balance} € à {posBalanceMembers[0].name}
-                </li>
-              ))
-            )}
-            {(negBalanceMembers.length > 1 && posBalanceMembers.length > 1) && (
-              negBalanceMembers.map((negMember) => {
-                let paidDebt = 0;
-                const [first] = posBalanceMembers;
-                return (
-                  posBalanceMembers.map((posMember) => {
-                    if (paidDebt + Number(posMember.balance) - negMember.balance < perPaxExpense) {
-                      paidDebt = Number(posMember.balance);
-                    }
-                    else {
-                      paidDebt = (perPaxExpense - getSumMemberExpenses(negMember.id) - first.balance).toFixed(2);
-                    }
-                    return (
-                      <li>{negMember.name} doit {paidDebt}€ à {posMember.name}</li>
-                    );
-                  })
-                );
-              })
-            )}
+            {debts.map((debt) => (
+              <li key={debt.id} className="group-debt-details-item">
+                <div className="group-debt-details-sentence">
+                  {debt.borrower} doit  à {debt.lender}
+                </div>
+                <div className="group-debt-details-item-value">
+                  {debt.value.toFixed(2)}€
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
@@ -178,7 +156,6 @@ GroupDetails.propTypes = {
   selectedGroupId: PropTypes.number.isRequired,
   saveSelectedId: PropTypes.func.isRequired,
   loadGroupDetails: PropTypes.func.isRequired,
-  members: PropTypes.array.isRequired,
   groupName: PropTypes.string.isRequired,
   groupIsDeleted: PropTypes.bool.isRequired,
   setGroupIsDeleted: PropTypes.func.isRequired,
@@ -188,6 +165,21 @@ GroupDetails.propTypes = {
   getGroupDetails: PropTypes.func.isRequired,
   totalExpense: PropTypes.number.isRequired,
   perPaxExpense: PropTypes.number.isRequired,
+  balances: PropTypes.arrayOf(
+    PropTypes.shape({
+      memberId: PropTypes.number.isRequired,
+      memberName: PropTypes.string.isRequired,
+      balance: PropTypes.number.isRequired,
+    }).isRequired,
+  ).isRequired,
+  debts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      borrower: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
+      lender: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
 };
 
 export default GroupDetails;

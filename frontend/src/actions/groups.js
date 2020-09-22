@@ -44,13 +44,23 @@ export const loadGroupDetails = () => ({
   type: LOAD_GROUP_DETAILS,
 });
 
-export const getGroupDetails = (groupName, members, expenses, totalExpense, perPaxExpense) => ({
+export const getGroupDetails = (
+  groupName,
+  members,
+  expenses,
+  totalExpense,
+  perPaxExpense,
+  balances,
+  debts,
+) => ({
   type: GET_GROUP_DETAILS,
   groupName,
   members,
   expenses,
   totalExpense,
   perPaxExpense,
+  balances,
+  debts,
 });
 
 export const addNewGroup = () => ({

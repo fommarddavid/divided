@@ -19,12 +19,13 @@ import {
 const mapStateToProps = (state, ownProps) => ({
   selectedGroupId: Number(ownProps.match.params.id),
   groupName: state.groups.groupName,
-  members: state.groups.members,
   groupIsDeleted: state.groups.groupIsDeleted,
   newMemberIsAdded: state.groups.newMemberIsAdded,
   expenses: state.groups.expenses,
   totalExpense: state.groups.totalExpense,
   perPaxExpense: state.groups.perPaxExpense,
+  balances: state.groups.balances,
+  debts: state.groups.debts,
 });
 
 // == Actions / dispatch
@@ -43,8 +44,24 @@ const mapDispatchToProps = (dispatch) => ({
   setNewMemberIsAdded: (bool) => {
     dispatch(setNewMemberIsAdded(bool));
   },
-  getGroupDetails: (groupName, members, expenses, totalExpense, perPaxExpense) => {
-    dispatch(getGroupDetails(groupName, members, expenses, totalExpense, perPaxExpense));
+  getGroupDetails: (
+    groupName,
+    members,
+    expenses,
+    totalExpense,
+    perPaxExpense,
+    balances,
+    debts,
+  ) => {
+    dispatch(getGroupDetails(
+      groupName,
+      members,
+      expenses,
+      totalExpense,
+      perPaxExpense,
+      balances,
+      debts,
+    ));
   },
 });
 

@@ -23,6 +23,8 @@ const initialState = {
   expenses: [],
   totalExpense: 0,
   perPaxExpense: 0,
+  balances: [],
+  debts: [],
   groupIsAdded: false,
   groupIsDeleted: false,
   newMemberIsAdded: false,
@@ -59,6 +61,8 @@ const groupsReducer = (state = initialState, action = {}) => {
         expenses: action.expenses,
         totalExpense: action.totalExpense,
         perPaxExpense: action.perPaxExpense,
+        balances: action.balances,
+        debts: action.debts,
       };
     case SET_GROUP_IS_ADDED:
       return {

@@ -37,6 +37,9 @@ const App = ({
         <Route exact path="/">
           {isConnected ? <Redirect to="/dashboard" /> : <Login />}
         </Route>
+        <Route exact path="/dashboard">
+          {!isConnected ? <Redirect to="/" /> : <Dashboard />}
+        </Route>
         <Route
           exact
           path="/register"
@@ -47,16 +50,13 @@ const App = ({
           path="/password"
           component={Password}
         />
-        <Route exact path="/dashboard">
-          {!isConnected ? <Redirect to="/" /> : <Dashboard />}
-        </Route>
         <Route
           exact
           path="/group/:id"
           component={GroupDetails}
         />
         <Route exact path="/group/add">
-          {groupIsAdded ? <Redirect to="/dashboard" /> : <GroupAdd />}
+          <GroupAdd />
         </Route>
         <Route exact path="/:id/members/add">
           {newMemberIsAdded ? <Redirect to="/dashboard" /> : <MemberAdd />}

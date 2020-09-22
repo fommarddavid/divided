@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE'
       });
       Member.hasMany(models.Expense, {
-        foreignKey: 'expenseId'
-      })
+        foreignKey: 'memberId'
+      });
     }
   };
   Member.init({
@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Member',
+    timestamps: false
   });
   return Member;
 };

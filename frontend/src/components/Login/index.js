@@ -26,6 +26,7 @@ const Login = ({
         name="email"
         value={email}
         onChange={handleChange}
+        autoComplete="off"
       />
       <input
         className="form-input"
@@ -34,6 +35,7 @@ const Login = ({
         name="password"
         value={password}
         onChange={handleChange}
+        autoComplete="off"
       />
       <button className="form-button" type="submit">Se Connecter</button>
       <div className="form-links">

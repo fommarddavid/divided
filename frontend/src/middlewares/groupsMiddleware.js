@@ -55,6 +55,8 @@ const groupsMiddleware = (store) => (next) => (action) => {
             response.data.expenses,
             response.data.totalExpense,
             response.data.perPaxExpense,
+            response.data.balances,
+            response.data.debts,
           ));
         })
         .catch((error) => {

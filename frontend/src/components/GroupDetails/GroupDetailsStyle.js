@@ -110,6 +110,20 @@ export default styled.div`
       margin-bottom: 1.5em;
       color : #fe9801;
     }
+
+    &-details{
+      
+      &-item{
+        font-weight: bold;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5em;
+
+        &-value{
+          color : #fe9801;
+        }
+      }
+    }
   }
 
   .nav-links{
