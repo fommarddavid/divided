@@ -1,50 +1,53 @@
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 export default styled.div`
 
   .group-card {
-    border-radius: 0.2em;
-    box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
-    width: 80%;
-    margin: 1em auto;
-    padding: 1em;
+    color : ${theme.color.font};
   }
 
   .group-title{
     border-radius: 0.2em;
-    box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
-    width: 95%;
-    margin: 1em auto;
+    border-left: 0.6em solid ${theme.color.border};
+    border-right: 0.6em solid ${theme.color.border};
+    width: 80%;
+    margin: 0 auto;
     padding: 1em;
     display: flex;
     justify-content: space-between;
-    font-family: 'Sunflower', sans-serif;
-    color : #fe9801;
+    font-family:${theme.font.title};
+    background-color: ${theme.color.active};
   }
 
   .group-member{
     border-radius: 0.2em;
-    box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
-    width: 95%;
-    margin: 1em auto;
+    border-left: 0.6em solid ${theme.color.border};
+    border-right: 0.6em solid ${theme.color.border};
+    width: 80%;
+    background-color: ${theme.color.active};
+    margin: 0.5em auto;
     padding: 1em;
 
     &-title{
       text-align: center;
-      font-family: 'Sunflower', sans-serif;
-      font-weight: bold;
-      color : #fe9801;
+      font-family: ${theme.font.title};
       display: flex;
       justify-content: space-between;
-      margin-bottom: 1.5em;
+      margin-bottom: 0.9em;
     }
 
     &-list{
-      font-weight: bold;
+      font-family: ${theme.font.section};
 
       &-item{
         display: flex;
+        margin-bottom: 0.2em;
         justify-content: space-between;
+
+        &-balance{
+          font-weight: bold;
+        }
       }
     }
 
@@ -55,24 +58,25 @@ export default styled.div`
 
   .group-expense{
     border-radius: 0.2em;
-    box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
-    width: 95%;
-    margin: 1em auto;
+    border-left: 0.6em solid ${theme.color.border};
+    border-right: 0.6em solid ${theme.color.border};
+    background-color: ${theme.color.active};
+    width: 80%;
+    margin: 0.5em auto;
     padding: 1em;
 
     &-title{
       text-align: center;
-      font-weight: bold;
-      font-family: 'Sunflower', sans-serif;
-      margin-bottom: 1.5em;
-      color : #fe9801;
+      font-family: ${theme.font.title};
+      margin-bottom: 0.9em;
     }
 
     &-list{
       font-weight: bold;
+      font-family: ${theme.font.section};
 
       &-item{
-        margin-bottom: 1.5em;
+        margin-bottom: 0.8em;
       }
 
       &-itemNameValue{
@@ -88,7 +92,17 @@ export default styled.div`
     &-resume{
       display: flex;
       justify-content: space-between;
-      font-weight: bold;
+
+      &-title{
+        font-family: ${theme.font.title};
+        margin-bottom: 0.6em; 
+      }
+
+      &-value{
+        font-family: ${theme.font.section};
+        font-weight: bold;
+        margin-bottom: 0.6em;
+      }
     }
 
     &-add{
@@ -98,29 +112,29 @@ export default styled.div`
 
   .group-debt{
     border-radius: 0.2em;
-    box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
-    width: 95%;
-    margin: 1em auto;
+    border-left: 0.6em solid ${theme.color.border};
+    border-right: 0.6em solid ${theme.color.border};
+    background-color: ${theme.color.active};
+    width: 80%;
+    margin: 0.5em auto;
     padding: 1em;
 
     &-title{
       text-align: center;
-      font-weight: bold;
-      font-family: 'Sunflower', sans-serif;
-      margin-bottom: 1.5em;
-      color : #fe9801;
+      font-family: ${theme.font.title};
+      margin-bottom: 0.9em;
     }
 
     &-details{
       
       &-item{
-        font-weight: bold;
+        font-family: ${theme.font.section};
         display: flex;
         justify-content: space-between;
         margin-bottom: 0.5em;
 
         &-value{
-          color : #fe9801;
+          font-weight: bold;
         }
       }
     }
@@ -130,14 +144,13 @@ export default styled.div`
     display: flex;
     justify-content: center;
     margin-top: 0.5em;
-    font-family: 'Sunflower', sans-serif;
-    color: #00E6FF;
-
+    font-family: ${theme.font.section};
+    color: ${theme.color.font};
     a{
       display: inline-block;
 
       &:hover{
-        color: #fe9801;
+        color: ${theme.color.active};
       }
     }
   }

@@ -6,7 +6,7 @@ import GroupStyle from './GroupStyle';
 
 const Group = ({ id, name }) => (
   <GroupStyle>
-    <Link to={`group/${id}`}>
+    <Link to={`/group/${id}/details`}>
       <h1 className="group-card-title">{name}</h1>
     </Link>
   </GroupStyle>

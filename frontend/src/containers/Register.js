@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import Register from 'src/components/Register';
 
 // Action Creators
-import { changeValue, register } from '../actions/auth';
+import { changeValue, register, getErrorMessage } from '../actions/auth';
 
 // == Data / state
 // Notre composant à besoin de données depuis le state ?
@@ -15,6 +15,8 @@ const mapStateToProps = (state) => ({
   username: state.auth.username,
   password: state.auth.password,
   confirmedPassword: state.auth.confirmedPassword,
+  errorConnection: state.auth.errorConnection,
+  errorMessages: state.auth.errorMessages,
 });
 
 // == Actions / dispatch
@@ -26,6 +28,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   register: () => {
     dispatch(register());
+  },
+  getErrorMessage: (bool, message) => {
+    dispatch(getErrorMessage(bool, message));
   },
 });
 

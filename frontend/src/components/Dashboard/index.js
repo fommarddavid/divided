@@ -7,6 +7,7 @@ import { PlusCircle, LogOut } from 'react-feather';
 // == Import
 import Group from '../Group';
 import DashboardStyle from './DashboardStyle';
+import theme from '../../styles/theme';
 
 // == Composant
 
@@ -19,6 +20,10 @@ const Dashboard = ({
   setGroupIsAdded,
   groupIsDeleted,
   setGroupIsDeleted,
+  getErrorGroupsMessage,
+  resetGroupsField,
+  setMailhasBeenSentOrReset,
+  resetAuthField,
 }) => {
   useEffect(() => {
     loadGroups();
@@ -28,9 +33,13 @@ const Dashboard = ({
     if (groupIsDeleted) {
       setGroupIsDeleted(true);
     }
+    getErrorGroupsMessage(false, []);
+    resetGroupsField('', '', '', '', '');
+    setMailhasBeenSentOrReset(false, '');
   }, []);
   const handleClick = () => {
     setIsConnected(true);
+    resetAuthField();
     sessionStorage.clear();
   };
 
@@ -38,10 +47,10 @@ const Dashboard = ({
     <DashboardStyle>
       <div className="plus">
         <Link to="/group/add">
-          <PlusCircle color="#fe9801" size={40} />
+          <PlusCircle color={theme.color.border} size={40} />
         </Link>
         <h1>{username}</h1>
-        <LogOut color="#fe9801" size={40} onClick={handleClick} />
+        <LogOut color={theme.color.border} size={40} onClick={handleClick} />
       </div>
       {groups.map((group) => (
         <Group
@@ -62,6 +71,10 @@ Dashboard.propTypes = {
   setGroupIsAdded: PropTypes.func.isRequired,
   groupIsDeleted: PropTypes.bool.isRequired,
   setGroupIsDeleted: PropTypes.func.isRequired,
+  getErrorGroupsMessage: PropTypes.func.isRequired,
+  resetGroupsField: PropTypes.func.isRequired,
+  setMailhasBeenSentOrReset: PropTypes.func.isRequired,
+  resetAuthField: PropTypes.func.isRequired,
 };
 
 // == Export

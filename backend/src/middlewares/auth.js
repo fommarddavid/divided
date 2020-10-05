@@ -30,7 +30,8 @@ const verifyToken = (req, res, next) => {
   next();
 };
 
+
 export default {
   getTokenFromHeader,
-  verifyToken
+  verifyToken,
 };

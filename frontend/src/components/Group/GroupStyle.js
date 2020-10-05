@@ -1,15 +1,19 @@
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 export default styled.div`
   border-radius: 0.2em;
-  box-shadow: 0px 0px 5px 2px rgba(0,230,255,0.50);
+  border-left: 0.6em solid ${theme.color.border};
+  border-right: 0.6em solid ${theme.color.border};
   width: 80%;
   margin: 1em auto;
   padding: 4em 1em;
+  background-color: ${theme.color.active};
 
   .group-card-title{
-    font-family: 'Sunflower', sans-serif;
-    color : #fe9801;
+    font-weight: bold;
+    font-family: ${theme.font.section};
+    color : ${theme.color.font};
     text-align: center;
   }
 

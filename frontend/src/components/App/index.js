@@ -9,7 +9,8 @@ import Login from '../../containers/Login';
 import Dashboard from '../../containers/Dashboard';
 import Register from '../../containers/Register';
 import Header from '../Header';
-import Password from '../Password';
+import ForgotPassword from '../../containers/ForgotPassword';
+import ResetPassword from '../../containers/ResetPassword';
 import GroupDetails from '../../containers/GroupDetails';
 import GroupAdd from '../../containers/GroupAdd';
 import MemberAdd from '../../containers/MemberAdd';
@@ -22,6 +23,7 @@ const App = ({
   setIsConnected,
   groupIsAdded,
   newMemberIsAdded,
+  newExpenseIsAdded,
 }) => {
   const token = sessionStorage.getItem('token');
   useEffect(() => {
@@ -29,7 +31,6 @@ const App = ({
       setIsConnected(false);
     }
   }, []);
-
   return (
     <AppStyle>
       <ModalProvider>
@@ -38,7 +39,7 @@ const App = ({
           {isConnected ? <Redirect to="/dashboard" /> : <Login />}
         </Route>
         <Route exact path="/dashboard">
-          {!isConnected ? <Redirect to="/" /> : <Dashboard />}
+          {(!isConnected) ? <Redirect to="/" /> : <Dashboard />}
         </Route>
         <Route
           exact
@@ -47,25 +48,29 @@ const App = ({
         />
         <Route
           exact
-          path="/password"
-          component={Password}
+          path="/password/forgot"
+          component={ForgotPassword}
         />
         <Route
           exact
-          path="/group/:id"
+          path="/password/reset/:username/:header/:payload/:signature"
+          component={ResetPassword}
+        />
+        <Route
+          exact
+          path="/group/:id/details"
           component={GroupDetails}
         />
         <Route exact path="/group/add">
-          <GroupAdd />
+          {groupIsAdded ? <Redirect to="/dashboard" /> : <GroupAdd />}
         </Route>
-        <Route exact path="/:id/members/add">
-          {newMemberIsAdded ? <Redirect to="/dashboard" /> : <MemberAdd />}
+        <Route exact path="/group/:id/member/add">
+          {newMemberIsAdded ? <Redirect to={`/group/${sessionStorage.getItem('selectedId')}/details`} /> : <MemberAdd />}
         </Route>
-        <Route
-          exact
-          path="/:id/expense/add"
-          component={ExpenseAdd}
-        />
+        <Route exact path="/group/:id/expense/add">
+          {newExpenseIsAdded ? <Redirect to={`/group/${sessionStorage.getItem('selectedId')}/details`} />
+            : <ExpenseAdd />}
+        </Route>
       </ModalProvider>
     </AppStyle>
   );
@@ -76,6 +81,7 @@ App.propTypes = {
   setIsConnected: PropTypes.func.isRequired,
   groupIsAdded: PropTypes.bool.isRequired,
   newMemberIsAdded: PropTypes.bool.isRequired,
+  newExpenseIsAdded: PropTypes.bool.isRequired,
 };
 
 // == Export

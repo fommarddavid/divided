@@ -1,7 +1,11 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import Field from '../Field';
+import Select from '../Select';
+import DisplayErrors from '../DisplayErrors';
 import ExpenseAddStyle from '../FormStyle';
 
 const ExpenseAdd = ({
@@ -11,47 +15,47 @@ const ExpenseAdd = ({
   newExpenseName,
   newExpenseValue,
   members,
+  errorGroupsMessages,
+  getErrorGroupsMessage,
 }) => {
-  const handleChange = (evt) => {
-    changeValue(evt.target.name, evt.target.value);
-  };
-  const handleChange2 = (evt) => {
+  /* const handleChange = (evt) => {
     changePayer(evt.target.value);
-  };
+  }; */
   const handleSubmit = (evt) => {
     evt.preventDefault();
     addNewExpense();
   };
   return (
     <ExpenseAddStyle onSubmit={handleSubmit}>
-      <input
-        className="form-input"
-        type="text"
+      <Field
+        value={newExpenseName}
+        changeValue={changeValue}
         placeholder="Nom de la nouvelle dépense"
         name="newExpenseName"
-        value={newExpenseName}
-        onChange={handleChange}
+        type="text"
+        getErrorMessage={getErrorGroupsMessage}
       />
-      <input
-        className="form-input"
-        type="number"
+      <Field
+        value={newExpenseValue}
+        changeValue={changeValue}
         placeholder="Valeur de la nouvelle dépense"
         name="newExpenseValue"
-        value={newExpenseValue}
-        onChange={handleChange}
+        type="number"
+        getErrorMessage={getErrorGroupsMessage}
       />
-      <select className="form-input" name="payers" id="payer-select" onChange={handleChange2}>
-        <option value="">Qui a fait cette dépense?</option>
-        {members.map((member) => (
-          <option
-            key={member.id}
-            value={member.id}
-          >
-            {member.name}
-          </option>
-        ))}
-      </select>
+      <Select
+        placeholder="Choisissez un membre"
+        changePayer={changePayer}
+        members={members}
+      />
       <button className="form-button" type="submit">Ajouter</button>
+      {errorGroupsMessages.map((errorMessage) => (
+        <DisplayErrors
+          key={errorMessage.value}
+          {...errorMessage}
+          getErrorMessage={getErrorGroupsMessage}
+        />
+      ))}
       <div className="form-links">
         <Link to="/dashboard">back to your dashboard</Link>
       </div>
@@ -71,6 +75,8 @@ ExpenseAdd.propTypes = {
       name: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
+  errorGroupsMessages: PropTypes.array.isRequired,
+  getErrorGroupsMessage: PropTypes.func.isRequired,
 };
 
 export default ExpenseAdd;

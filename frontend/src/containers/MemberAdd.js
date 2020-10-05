@@ -5,13 +5,19 @@ import { connect } from 'react-redux';
 import MemberAdd from '../components/MemberAdd';
 
 // Action Creators
-import { changeValue, addNewMember } from '../actions/groups';
+import {
+  changeValue,
+  addNewMember,
+  loadGroupDetails,
+  getErrorGroupsMessage,
+} from '../actions/groups';
 
 // == Data / state
 // Notre composant à besoin de données depuis le state ?
 // On prépare un objet avec les props attendues par le composant
 const mapStateToProps = (state) => ({
   newMemberName: state.groups.newMemberName,
+  errorGroupsMessages: state.groups.errorGroupsMessages,
 });
 
 // == Actions / dispatch
@@ -23,6 +29,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   addNewMember: () => {
     dispatch(addNewMember());
+  },
+  loadGroupDetails: () => {
+    dispatch(loadGroupDetails());
+  },
+  getErrorGroupsMessage: (bool, messages) => {
+    dispatch(getErrorGroupsMessage(bool, messages));
   },
 });
 

@@ -5,7 +5,11 @@ import { connect } from 'react-redux';
 import Login from 'src/components/Login';
 
 // Action Creators
-import { changeValue, login } from '../actions/auth';
+import {
+  changeValue,
+  login,
+  getErrorMessage,
+} from '../actions/auth';
 
 // == Data / state
 // Notre composant à besoin de données depuis le state ?
@@ -13,6 +17,8 @@ import { changeValue, login } from '../actions/auth';
 const mapStateToProps = (state) => ({
   email: state.auth.email,
   password: state.auth.password,
+  errorConnection: state.auth.errorConnection,
+  errorMessages: state.auth.errorMessages,
 });
 
 // == Actions / dispatch
@@ -24,6 +30,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   login: () => {
     dispatch(login());
+  },
+  getErrorMessage: (bool, message) => {
+    dispatch(getErrorMessage(bool, message));
   },
 });
 

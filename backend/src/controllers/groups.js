@@ -1,5 +1,6 @@
 import jwt, { decode } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
+import { validationResult } from 'express-validator';
 
 import { Group, Member, Expense } from '../models';
 import middlewares from '../middlewares';
@@ -24,17 +25,32 @@ const getGroups = async(req, res) => {
 };
 
 const setGroups = async(req, res) => {
-  const token = middlewares.auth.getTokenFromHeader(req);
-  const decoded = jwt.decode(token);
+  try{
+    const token = middlewares.auth.getTokenFromHeader(req);
+    const decoded = jwt.decode(token);
 
-  const newGroup = await Group.create({
-    name: req.body.name,
-    userId: decoded.id
-  });
-
-  return res.status(200).json({
-    message: `Group ${req.body.name} added for ${decoded.username}`
-  })
+    const results = validationResult(req);
+    // console.log('results: ', results);
+    
+    if(results.isEmpty()){
+      const newGroup = await Group.create({
+        name: req.body.name,
+        userId: decoded.id
+      });
+      return res.status(200).json({
+        success: true, 
+        messages: `Le group ${req.body.name} a été créé par ${decoded.username}`
+      })
+    } else {
+      res.status(400).json({
+        error: true,
+        messages: results.array()
+      });
+    }
+  } catch(error) {
+    console.log(error);
+    res.status(500).json(error.name);
+  }
 };
 
 const deleteGroup = async(req, res) => {
@@ -200,88 +216,103 @@ const getDetails = async(req, res) => {
 }
 
 const setMembers = async(req, res) => {
-  const token = middlewares.auth.getTokenFromHeader(req);
-  const decoded = jwt.decode(token);
+  try{
+    const token = middlewares.auth.getTokenFromHeader(req);
+    const decoded = jwt.decode(token);
 
-  const group = await Group.findOne({
-    where: {
-      id: req.params.groupId
+    const results = validationResult(req);
+    // console.log('results: ', results);
+
+    if(results.isEmpty()) {
+      const group = await Group.findOne({
+        where: {
+          id: req.params.groupId
+        }
+      });
+      const members = await Member.findAll({
+        where: {
+          groupId: req.params.groupId,
+        }
+      });
+
+      if(group.userId === decoded.id){
+        const newMember = await Member.create({
+          name: req.body.name,
+          groupId: req.params.groupId,
+          userId: decoded.id
+        });
+        return res.json({
+          succes: true,
+          messages: `${req.body.name} a été ajouté au groupe ${group.name} par ${decoded.username}`
+        })
+      } else {
+        return res.status(400).json({
+          error: true,
+          messages:[{
+            value: decoded.id,
+            msg: 'Accès non autorisé',
+            param: 'userId',
+            location: 'params'
+          }]
+        });
+      };
+    } else {
+      return res.status(400).json({
+        error: true,
+        messages: results.array()
+      });
     }
-  });
-
-  const members = await Member.findAll({
-    where: {
-      groupId: req.params.groupId,
-    }
-  });
-
-  const name = req.body.name;
-  if(name === '') {
-    return res.status(400).json({
-      message: 'Empty field for new member name'
-    })
-  };
-  
-  const sameName = members.find(m => m.name === req.body.name);
-  if(sameName) {
-    return res.status(400).json({
-      message: `${req.body.name} already exists in ${group.name}`
-    })
-  };
-  if(group.userId === decoded.id){
-    const newMember = await Member.create({
-      name: req.body.name,
-      groupId: req.params.groupId,
-      userId: decoded.id
-    });
-
-    return res.json({
-      message: `${req.body.name} added to ${group.name} by ${decoded.username}`
-    })
-  } else {
-    return res.status(400).json({
-      message:'Acces denied'
-    });
-  };
+  } catch(error){
+    // console.log(error);
+    res.status(500).json(error.name);
+  }
 };
 
 const setExpenses = async(req, res) => {
-  const token = middlewares.auth.getTokenFromHeader(req);
-  const decoded = jwt.decode(token);
-
-  const newExpenseName = req.body.newExpenseName;
-  const newExpenseValue = req.body.newExpenseValue;
-  const memberId = req.body.memberId;
-
-  if(newExpenseName === '' || newExpenseValue === '') {
-    return res.status(400).json({
-      message: 'Error : newExpenseName or newExpenseValue is empty'
+  try {
+    const token = middlewares.auth.getTokenFromHeader(req);
+    const decoded = jwt.decode(token);
+  
+    const results = validationResult(req);
+    // console.log('results: ', results);
+  
+    const newExpenseName = req.body.newExpenseName;
+    const newExpenseValue = req.body.newExpenseValue;
+    const memberId = req.body.memberId;
+  
+    if(! results.isEmpty()){
+      return res.status(400).json({
+        error: true,
+        messages: results.array()
+      });
+    }
+  
+    const group = await Group.findOne({
+      where: {
+        id: req.params.groupId
+      },
+      include: [
+        {
+          model: Member,
+          attributes: ['id','name'],
+        }
+      ]
     });
+  
+    const newExpense = await Expense.create({
+      name: newExpenseName,
+      value: newExpenseValue,
+      groupId: req.params.groupId,
+      memberId: memberId,
+    });
+  
+    return res.status(200).json({
+      success: true,
+      messages: `Expense ${newExpenseName} added for the group ${group.name}`
+    })
+  } catch (error) {
+    res.status(500).json(error);
   }
-
-  const group = await Group.findOne({
-    where: {
-      id: req.params.groupId
-    },
-    include: [
-      {
-        model: Member,
-        attributes: ['id','name'],
-      }
-    ]
-  });
-  // console.log(JSON.stringify(group));
-
-  const newExpense = await Expense.create({
-    name: newExpenseName,
-    value: newExpenseValue,
-    groupId: req.params.groupId,
-    memberId: memberId,
-  });
-
-  return res.status(200).json({
-    message: `Expense ${newExpenseName} added for the group ${group.name}`
-  })
 };
 
 export default {

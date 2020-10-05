@@ -11,6 +11,7 @@ import {
   setGroupIsDeleted,
   setNewMemberIsAdded,
   getGroupDetails,
+  setNewExpenseIsAdded,
 } from '../actions/groups';
 
 // == Data / state
@@ -26,6 +27,7 @@ const mapStateToProps = (state, ownProps) => ({
   perPaxExpense: state.groups.perPaxExpense,
   balances: state.groups.balances,
   debts: state.groups.debts,
+  newExpenseIsAdded: state.groups.newExpenseIsAdded,
 });
 
 // == Actions / dispatch
@@ -43,6 +45,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setNewMemberIsAdded: (bool) => {
     dispatch(setNewMemberIsAdded(bool));
+  },
+  setNewExpenseIsAdded: (bool) => {
+    dispatch(setNewExpenseIsAdded(bool));
   },
   getGroupDetails: (
     groupName,

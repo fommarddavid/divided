@@ -1,14 +1,40 @@
 import { Router } from 'express';
+import { body } from 'express-validator';
 
+import { User } from '../models';
 import controllers from '../controllers';
+import middlewares from '../middlewares';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.send('Hello Nok!');
-});
+router.post('/register', [
+  body('username', 'Identifiant non valide')
+    .not().isEmpty().trim().escape(),
+  body('email', 'Email non valide')
+    .not().isEmpty().isEmail().normalizeEmail()
+    .custom((value) => {
+      return User.findOne({ where: { email: value } }).then((user) => {
+        if(user) {
+          return Promise.reject('Email déjà utilisé');
+        }
+      });
+    }),
+  body('password', 'Le mot de passe doit avoir au moins 8 caractères')
+  .not().isEmpty().isLength({min: 8}),
+  body('confirmedPassword', 'Les deux mots de passe sont différents')
+    .custom((value, {req}) => (value === req.body.password)),
+], controllers.auth.register);
 
-router.post('/register', controllers.auth.register);
-router.post('/login', controllers.auth.login);
+router.post('/login', [
+  body('email', 'Email non valide')
+  .not().isEmpty().isEmail().normalizeEmail()
+  .custom((value) => {
+    return User.findOne({ where: { email: value } }).then((user) => {
+      if(!user) {
+        return Promise.reject('Email non reconnu');
+      }
+    });
+  }),
+], controllers.auth.login);
 
 export default router;

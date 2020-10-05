@@ -1,6 +1,14 @@
 import axios from 'axios';
 
-import { LOGIN, REGISTER, setIsConnected } from '../actions/auth';
+import {
+  LOGIN,
+  REGISTER,
+  setIsConnected,
+  getErrorMessage,
+  FORGOT_PASSWORD,
+  RESET_PASSWORD,
+  setMailhasBeenSentOrReset,
+} from '../actions/auth';
 
 const authMiddleware = (store) => (next) => (action) => {
   switch (action.type) {
@@ -14,11 +22,12 @@ const authMiddleware = (store) => (next) => (action) => {
         .then((response) => {
           if (response.data.token) {
             store.dispatch(setIsConnected(state.auth.isConnected));
+            sessionStorage.setItem('token', response.data.token);
           }
-          sessionStorage.setItem('token', response.data.token);
         })
         .catch((error) => {
-          console.log(error);
+          // console.error(error.response.data);
+          store.dispatch(getErrorMessage(error.response.data.error, error.response.data.messages));
         });
       break;
     }
@@ -32,10 +41,54 @@ const authMiddleware = (store) => (next) => (action) => {
           confirmedPassword: state.auth.confirmedPassword,
         })
         .then((response) => {
-          console.log(response.data);
+          if (response.data.message) {
+            window.location.href = '/';
+          }
         })
         .catch((error) => {
-          console.log(error);
+          // console.error(error);
+          store.dispatch(getErrorMessage(error.response.data.error, error.response.data.messages));
+        });
+      break;
+    }
+    case FORGOT_PASSWORD: {
+      const state = store.getState();
+      axios
+        .post('http://localhost:3000/api/password/forgot', {
+          email: state.auth.email,
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.success) {
+            store.dispatch(setMailhasBeenSentOrReset(response.data.success, response.data.message));
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          store.dispatch(getErrorMessage(error.response.data.error, error.response.data.messages));
+        });
+      break;
+    }
+    case RESET_PASSWORD: {
+      const state = store.getState();
+      axios
+        .post('http://localhost:3000/api/password/reset', {
+          username: state.auth.username,
+          password: state.auth.password,
+          confirmedPassword: state.auth.confirmedPassword,
+          token: state.auth.resetPasswordToken,
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.success) {
+            store.dispatch(setMailhasBeenSentOrReset(response.data.success, response.data.message));
+          }
+        })
+        .catch((error) => {
+          store.dispatch(getErrorMessage(
+            error.response.data.error,
+            error.response.data.messages,
+          ));
         });
       break;
     }

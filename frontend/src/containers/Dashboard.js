@@ -5,11 +5,17 @@ import { connect } from 'react-redux';
 import Dashboard from 'src/components/Dashboard';
 
 // Action Creators
-import { setIsConnected } from '../actions/auth';
+import {
+  setIsConnected,
+  setMailhasBeenSentOrReset,
+  resetAuthField,
+} from '../actions/auth';
 import {
   loadGroups,
   setGroupIsAdded,
   setGroupIsDeleted,
+  getErrorGroupsMessage,
+  resetGroupsField,
 } from '../actions/groups';
 
 // == Data / state
@@ -37,6 +43,18 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setGroupIsDeleted: (bool) => {
     dispatch(setGroupIsDeleted(bool));
+  },
+  getErrorGroupsMessage: (bool, messages) => {
+    dispatch(getErrorGroupsMessage(bool, messages));
+  },
+  resetGroupsField: () => {
+    dispatch(resetGroupsField());
+  },
+  setMailhasBeenSentOrReset: (bool, messages) => {
+    dispatch(setMailhasBeenSentOrReset(bool, messages));
+  },
+  resetAuthField: () => {
+    dispatch(resetAuthField());
   },
 });
 

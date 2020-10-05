@@ -13,6 +13,9 @@ export const SET_GROUP_IS_DELETED = 'SET_GROUP_IS_DELETED';
 export const ADD_NEW_MEMBER = 'ADD_NEW_MEMBER';
 export const SET_NEW_MEMBER_IS_ADDED = 'SET_NEW_MEMBER_IS_ADDED';
 export const ADD_NEW_EXPENSE = 'ADD_NEW_EXPENSE';
+export const SET_NEW_EXPENSE_IS_ADDED = 'SET_NEW_EXPENSE_IS_ADDED';
+export const GET_ERROR_GROUPS_MESSAGE = 'GET_ERROR_GROUPS_MESSAGE';
+export const RESET_GROUPS_FIELD = 'RESET_GROUPS_FIELD';
 
 // Creators
 export const changeValue = (name, value) => ({
@@ -92,4 +95,19 @@ export const setNewMemberIsAdded = (bool) => ({
 
 export const addNewExpense = () => ({
   type: ADD_NEW_EXPENSE,
+});
+
+export const setNewExpenseIsAdded = (bool) => ({
+  type: SET_NEW_EXPENSE_IS_ADDED,
+  bool,
+});
+
+export const getErrorGroupsMessage = (bool, messages) => ({
+  type: GET_ERROR_GROUPS_MESSAGE,
+  bool,
+  messages,
+});
+
+export const resetGroupsField = () => ({
+  type: RESET_GROUPS_FIELD,
 });

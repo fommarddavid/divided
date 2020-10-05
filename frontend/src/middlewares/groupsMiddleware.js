@@ -8,6 +8,7 @@ import {
   LOAD_GROUPS,
   getGroups,
   LOAD_GROUP_DETAILS,
+  loadGroupDetails,
   getGroupDetails,
   ADD_NEW_GROUP,
   setGroupIsAdded,
@@ -16,6 +17,9 @@ import {
   ADD_NEW_MEMBER,
   setNewMemberIsAdded,
   ADD_NEW_EXPENSE,
+  setNewExpenseIsAdded,
+  getErrorGroupsMessage,
+  resetGroupsField,
 } from '../actions/groups';
 
 const groupsMiddleware = (store) => (next) => (action) => {
@@ -48,7 +52,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
           },
         })
         .then((response) => {
-          console.log('LOAD_GROUP_DETAILS ', response.data);
+          // console.log('LOAD_GROUP_DETAILS ', response.data);
           store.dispatch(getGroupDetails(
             response.data.groupName,
             response.data.members,
@@ -78,10 +82,16 @@ const groupsMiddleware = (store) => (next) => (action) => {
           Authorization: `Bearer ${token}`,
         },
       }).then((response) => {
-        console.log('ADD_NEW_GROUP', response.data);
-        store.dispatch(setGroupIsAdded(false));
+        // console.log('ADD_NEW_GROUP', response.data);
+        if (response.data.success) {
+          store.dispatch(setGroupIsAdded(false));
+        }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
+        store.dispatch(getErrorGroupsMessage(
+          error.response.data.error,
+          error.response.data.messages,
+        ));
       });
       break;
     }
@@ -117,10 +127,18 @@ const groupsMiddleware = (store) => (next) => (action) => {
           Authorization: `Bearer ${token}`,
         },
       }).then((response) => {
-        console.log('ADD_NEW_MEMBER', response.data);
-        store.dispatch(setNewMemberIsAdded(false));
+        // console.log('ADD_NEW_MEMBER', response.data);
+        if (response.data.succes) {
+          store.dispatch(setNewMemberIsAdded(false));
+          store.dispatch(loadGroupDetails());
+          store.dispatch(resetGroupsField());
+        }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
+        store.dispatch(getErrorGroupsMessage(
+          error.response.data.error,
+          error.response.data.messages,
+        ));
       });
       break;
     }
@@ -140,10 +158,18 @@ const groupsMiddleware = (store) => (next) => (action) => {
           Authorization: `Bearer ${token}`,
         },
       }).then((response) => {
-        console.log('ADD_NEW_EXPENSE', response.data);
-        store.dispatch(setNewMemberIsAdded(false));
+        // console.log('ADD_NEW_EXPENSE', response.data);
+        if (response.data.success) {
+          store.dispatch(setNewExpenseIsAdded(false));
+          store.dispatch(loadGroupDetails());
+          store.dispatch(resetGroupsField());
+        }
       }).catch((error) => {
-        console.log(error);
+        // console.log(error);
+        store.dispatch(getErrorGroupsMessage(
+          error.response.data.error,
+          error.response.data.messages,
+        ));
       });
       break;
     }

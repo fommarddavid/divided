@@ -5,7 +5,12 @@ import { connect } from 'react-redux';
 import ExpenseAdd from '../components/ExpenseAdd';
 
 // Action Creators
-import { changeValue, changePayer, addNewExpense } from '../actions/groups';
+import {
+  changeValue,
+  changePayer,
+  addNewExpense,
+  getErrorGroupsMessage,
+} from '../actions/groups';
 
 // == Data / state
 // Notre composant à besoin de données depuis le state ?
@@ -14,6 +19,7 @@ const mapStateToProps = (state) => ({
   members: state.groups.members,
   newExpenseName: state.groups.newExpenseName,
   newExpenseValue: state.groups.newExpenseValue,
+  errorGroupsMessages: state.groups.errorGroupsMessages,
 });
 
 // == Actions / dispatch
@@ -28,6 +34,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   addNewExpense: () => {
     dispatch(addNewExpense());
+  },
+  getErrorGroupsMessage: (bool, messages) => {
+    dispatch(getErrorGroupsMessage(bool, messages));
   },
 });
 

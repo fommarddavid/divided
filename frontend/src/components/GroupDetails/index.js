@@ -5,6 +5,7 @@ import { PlusCircle } from 'react-feather';
 
 import TrashedModal from '../../containers/TrashedModal';
 import GroupDetailsStyle from './GroupDetailsStyle';
+import theme from '../../styles/theme';
 
 const GroupDetails = ({
   selectedGroupId,
@@ -21,9 +22,12 @@ const GroupDetails = ({
   balances,
   debts,
   getGroupDetails,
+  newExpenseIsAdded,
+  setNewExpenseIsAdded,
 }) => {
   useEffect(() => {
     saveSelectedId(selectedGroupId);
+    sessionStorage.setItem('selectedId', selectedGroupId);
     loadGroupDetails();
     if (groupIsDeleted) {
       setGroupIsDeleted(true);
@@ -31,40 +35,17 @@ const GroupDetails = ({
     if (newMemberIsAdded) {
       setNewMemberIsAdded(true);
     }
+    if (newExpenseIsAdded) {
+      setNewExpenseIsAdded(true);
+    }
   }, []);
 
   const handleClick = () => {
     getGroupDetails('', [], [], 0, 0, [], []);
   };
 
-  /*
-    const getMemberExpenses = (id) => (
-    expenses.filter((expense) => (expense.dataValues.memberId === id))
-  );
-
-  const getSumMemberExpenses = (id) => (
-    getMemberExpenses(id).reduce((a, b) => a + b.dataValues.value, 0)
-  );
-
-  const getMemberBalance = (id) => (
-    (getSumMemberExpenses(id) - perPaxExpense).toFixed(2)
-  ); */
-
-  /*   const newMembers = members.map((member) => ({
-    ...member,
-    balance: getMemberBalance(member.id),
-  })).sort((a, b) => (a.balance - b.balance)); */
-
-  console.log(balances);
-  console.log(debts);
-
-  /*
-  const negBalanceMembers = newMembers.filter((member) => (member.balance <= 0));
-  console.log('negBalanceMembers: ', negBalanceMembers);
-  const posBalanceMembers = newMembers.filter((member) => (member.balance > 0));
-  console.log('posBalanceMembers: ', posBalanceMembers);
-  const sum = posBalanceMembers.reduce((a, b) => a + Number(b.balance), 0);
-  console.log(sum); */
+  // console.log(balances);
+  // console.log(debts);
 
   return (
     <GroupDetailsStyle>
@@ -91,8 +72,8 @@ const GroupDetails = ({
             ))}
           </ul>
           <div className="group-member-add">
-            <Link to={`/${selectedGroupId}/members/add`}>
-              <PlusCircle color="#fe9801" size={18} />
+            <Link to={`/group/${selectedGroupId}/member/add`}>
+              <PlusCircle color={theme.color.font} size={18} />
             </Link>
           </div>
         </div>
@@ -113,16 +94,16 @@ const GroupDetails = ({
             ))}
           </ul>
           <div className="group-expense-resume">
-            <h1 className="group-expense-title">Total Dépense</h1>
-            <div>{Number(totalExpense).toFixed(2)}€</div>
+            <h1 className="group-expense-resume-title">Total Dépense</h1>
+            <div className="group-expense-resume-value">{Number(totalExpense).toFixed(2)}€</div>
           </div>
           <div className="group-expense-resume">
-            <h1 className="group-expense-title">Total par personne</h1>
-            <div>{Number(perPaxExpense).toFixed(2)}€</div>
+            <h1 className="group-expense-resume-title">Total par personne</h1>
+            <div className="group-expense-resume-value">{Number(perPaxExpense).toFixed(2)}€</div>
           </div>
           <div className="group-expense-add">
-            <Link to={`/${selectedGroupId}/expense/add`}>
-              <PlusCircle color="#fe9801" size={18} />
+            <Link to={`/group/${selectedGroupId}/expense/add`}>
+              <PlusCircle color={theme.color.font} size={18} />
             </Link>
           </div>
         </div>
@@ -131,7 +112,7 @@ const GroupDetails = ({
           <ul className="group-debt-details">
             {debts.map((debt) => (
               <li key={debt.id} className="group-debt-details-item">
-                <div className="group-debt-details-sentence">
+                <div className="group-debt-details-item-sentence">
                   {debt.borrower} doit  à {debt.lender}
                 </div>
                 <div className="group-debt-details-item-value">
@@ -145,7 +126,7 @@ const GroupDetails = ({
 
       <div className="nav-links">
         <Link to="/dashboard" onClick={handleClick}>
-          back to dashboard
+          back to your dashboard
         </Link>
       </div>
     </GroupDetailsStyle>
@@ -180,6 +161,8 @@ GroupDetails.propTypes = {
       lender: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
+  newExpenseIsAdded: PropTypes.bool.isRequired,
+  setNewExpenseIsAdded: PropTypes.func.isRequired,
 };
 
 export default GroupDetails;

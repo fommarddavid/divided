@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import Field from '../Field';
+import DisplayErrors from '../DisplayErrors';
 import RegisterStyle from '../FormStyle';
 
 const Register = ({
@@ -11,56 +13,66 @@ const Register = ({
   confirmedPassword,
   changeValue,
   register,
+  errorConnection,
+  errorMessages,
+  getErrorMessage,
 }) => {
-  const handleChange = (evt) => {
-    changeValue(evt.target.name, evt.target.value);
-  };
   const handleSubmit = (evt) => {
     evt.preventDefault();
     register();
   };
   return (
     <RegisterStyle onSubmit={handleSubmit}>
-      <input
-        className="form-input"
-        type="text"
-        placeholder="Username"
-        name="username"
+      <Field
         value={username}
-        onChange={handleChange}
-        autoComplete="off"
+        changeValue={changeValue}
+        placeholder="Votre pseudo"
+        name="username"
+        type="text"
+        getErrorMessage={getErrorMessage}
       />
-      <input
-        className="form-input"
-        type="email"
-        placeholder="Email"
-        name="email"
+      <Field
         value={email}
-        onChange={handleChange}
-        autoComplete="off"
+        changeValue={changeValue}
+        placeholder="Votre email"
+        name="email"
+        type="email"
+        getErrorMessage={getErrorMessage}
       />
-      <input
-        className="form-input"
-        type="password"
-        placeholder="password"
-        name="password"
+      <Field
         value={password}
-        onChange={handleChange}
-        autoComplete="off"
-      />
-      <input
-        className="form-input"
+        changeValue={changeValue}
+        placeholder="Votre mot de passe"
+        name="password"
         type="password"
-        placeholder="Confirm password"
-        name="confirmedPassword"
-        value={confirmedPassword}
-        onChange={handleChange}
-        autoComplete="off"
+        getErrorMessage={getErrorMessage}
       />
-      <button className="form-button" type="submit">S'enregistrer</button>
-      <div className="form-links">
-        <Link to="/">Se connecter</Link>
-      </div>
+      <Field
+        value={confirmedPassword}
+        changeValue={changeValue}
+        placeholder="Confimez votre mot de passe"
+        name="confirmedPassword"
+        type="password"
+        getErrorMessage={getErrorMessage}
+      />
+      <button
+        className="form-button"
+        type="submit"
+      >S'enregistrer
+      </button>
+      {errorMessages.map((errorMessage) => (
+        <DisplayErrors
+          key={errorMessage.value}
+          {...errorMessage}
+          errorConnection={errorConnection}
+          getErrorMessage={getErrorMessage}
+        />
+      ))}
+      {(!errorConnection) && (
+        <div className="form-links">
+          <Link to="/">Se connecter</Link>
+        </div>
+      )}
     </RegisterStyle>
   );
 };
@@ -72,6 +84,9 @@ Register.propTypes = {
   confirmedPassword: PropTypes.string.isRequired,
   changeValue: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
+  errorConnection: PropTypes.bool.isRequired,
+  errorMessages: PropTypes.array.isRequired,
+  getErrorMessage: PropTypes.func.isRequired,
 };
 
 export default Register;

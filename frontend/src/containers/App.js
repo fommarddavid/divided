@@ -14,6 +14,7 @@ const mapStateToProps = (state) => ({
   isConnected: state.auth.isConnected,
   groupIsAdded: state.groups.groupIsAdded,
   newMemberIsAdded: state.groups.newMemberIsAdded,
+  newExpenseIsAdded: state.groups.newExpenseIsAdded,
 });
 
 // == Actions / dispatch

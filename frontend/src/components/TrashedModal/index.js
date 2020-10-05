@@ -3,30 +3,33 @@ import Modal from 'styled-react-modal';
 import { Trash2 } from 'react-feather';
 import PropTypes from 'prop-types';
 
+import theme from '../../styles/theme';
+
 const StyledModal = Modal.styled`
-  width: 100%;
+  width: 80%;
   height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background-color: ${theme.color.border};
 
   .modal-title {
-    font-family: 'Sunflower', sans-serif;
+    font-family: ${theme.font.title};
     font-size: 1em;
-    color : #fe9801;
+    color : ${theme.color.active};
   }
 
   .modal-buttons {
     button {
       margin: 1em;
       padding: 0.5em;
-      font-family: 'Sunflower', sans-serif;
+      font-family: ${theme.font.section};
       border: none;
 
       &:hover {
-        background-color: #fe9801;
-        color: #fff;
+        background-color: ${theme.color.active};
+        color: ${theme.color.font};
       }
     }
   }

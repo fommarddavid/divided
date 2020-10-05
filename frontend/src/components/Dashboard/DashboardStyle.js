@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import theme from '../../styles/theme';
 
 export default styled.div`
   .plus {
@@ -6,9 +7,9 @@ export default styled.div`
     justify-content: space-around;
 
     h1{
-      font-family: 'Sunflower', sans-serif;
+      font-family: ${theme.font.title};
       font-size: 1.8em;
-      color: #fe9801;
+      color: ${theme.color.border};
     }
   }
 `;

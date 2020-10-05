@@ -54,19 +54,19 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
-    "axios": "0.19.2",
+    "axios": "0.20.0",
     "jsonwebtoken": "^8.5.1",
     "prop-types": "15.7.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-feather": "^2.0.8",
-    "react-redux": "^7.2.0",
+    "react-redux": "^7.2.1",
     "react-reveal": "^1.2.2",
-    "react-router-dom": "^5.2.0",
+    "react-router-dom": "6.0.0-beta.0",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "styled-components": "5.1.1",
+    "styled-components": "5.2.0",
     "styled-react-modal": "^2.0.1",
-    "styled-reset": "^4.2.0"
+    "styled-reset": "^4.2.3"
   }
 }

@@ -8,6 +8,9 @@ import {
   SET_GROUP_IS_ADDED,
   SET_GROUP_IS_DELETED,
   SET_NEW_MEMBER_IS_ADDED,
+  SET_NEW_EXPENSE_IS_ADDED,
+  GET_ERROR_GROUPS_MESSAGE,
+  RESET_GROUPS_FIELD,
 } from '../actions/groups';
 
 // Initial State
@@ -28,6 +31,9 @@ const initialState = {
   groupIsAdded: false,
   groupIsDeleted: false,
   newMemberIsAdded: false,
+  newExpenseIsAdded: false,
+  errorGroups: false,
+  errorGroupsMessages: [],
 };
 
 // Reducer
@@ -78,6 +84,26 @@ const groupsReducer = (state = initialState, action = {}) => {
       return {
         ...state,
         newMemberIsAdded: !action.bool,
+      };
+    case SET_NEW_EXPENSE_IS_ADDED:
+      return {
+        ...state,
+        newExpenseIsAdded: !action.bool,
+      };
+    case GET_ERROR_GROUPS_MESSAGE:
+      return {
+        ...state,
+        errorGroups: action.bool,
+        errorGroupsMessages: action.messages,
+      };
+    case RESET_GROUPS_FIELD:
+      return {
+        ...state,
+        groupName: '',
+        newMemberName: '',
+        newExpenseName: '',
+        newExpenseValue: '',
+        newExpensePayer: '',
       };
     default:
       return state;

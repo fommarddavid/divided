@@ -2,32 +2,40 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import Field from '../Field';
+import DisplayErrors from '../DisplayErrors';
 import GroupAddStyle from '../FormStyle';
 
 const GroupAdd = ({
   groupName,
   changeValue,
   addNewGroup,
+  errorGroupsMessages,
+  getErrorGroupsMessage,
 }) => {
-  const handleChange = (evt) => {
-    changeValue(evt.target.name, evt.target.value);
-  };
   const handleSubmit = (evt) => {
     evt.preventDefault();
     addNewGroup();
   };
+
   return (
     <GroupAddStyle onSubmit={handleSubmit}>
-      <input
-        className="form-input"
-        type="text"
+      <Field
+        value={groupName}
+        changeValue={changeValue}
         placeholder="Nom du nouveau groupe"
         name="groupName"
-        value={groupName}
-        onChange={handleChange}
-        autoComplete="off"
+        type="text"
+        getErrorMessage={getErrorGroupsMessage}
       />
       <button className="form-button" type="submit">Ajouter</button>
+      {errorGroupsMessages.map((errorMessage) => (
+        <DisplayErrors
+          key={errorMessage.value}
+          {...errorMessage}
+          getErrorMessage={getErrorGroupsMessage}
+        />
+      ))}
       <div className="form-links">
         <Link to="/dashboard">back to your dashboard</Link>
       </div>
@@ -39,6 +47,8 @@ GroupAdd.propTypes = {
   groupName: PropTypes.string.isRequired,
   changeValue: PropTypes.func.isRequired,
   addNewGroup: PropTypes.func.isRequired,
+  errorGroupsMessages: PropTypes.array.isRequired,
+  getErrorGroupsMessage: PropTypes.func.isRequired,
 };
 
 export default GroupAdd;
