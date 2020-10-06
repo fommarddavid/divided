@@ -19,7 +19,9 @@ app.use('/api', routes.auth);
 app.use('/api/password', routes.password);
 app.use('/api/groups', routes.groups);
 
-app.listen(process.env.PORT, () => (
-  console.log(`App listening on port ${process.env.PORT} !`)
-));
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+app.listen(port);
 
