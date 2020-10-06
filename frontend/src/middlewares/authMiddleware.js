@@ -15,7 +15,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case LOGIN: {
       const state = store.getState();
       axios
-        .post('http://localhost:3000/api/login', {
+        .post(`${process.env.URL_API}login`, {
           email: state.auth.email,
           password: state.auth.password,
         })
@@ -34,7 +34,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case REGISTER: {
       const state = store.getState();
       axios
-        .post('http://localhost:3000/api/register', {
+        .post(`${process.env.URL_API}register`, {
           username: state.auth.username,
           email: state.auth.email,
           password: state.auth.password,
@@ -54,17 +54,17 @@ const authMiddleware = (store) => (next) => (action) => {
     case FORGOT_PASSWORD: {
       const state = store.getState();
       axios
-        .post('http://localhost:3000/api/password/forgot', {
+        .post(`${process.env.URL_API}forgot`, {
           email: state.auth.email,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.success) {
             store.dispatch(setMailhasBeenSentOrReset(response.data.success, response.data.message));
           }
         })
         .catch((error) => {
-          console.error(error);
+          // console.error(error);
           store.dispatch(getErrorMessage(error.response.data.error, error.response.data.messages));
         });
       break;
@@ -72,14 +72,14 @@ const authMiddleware = (store) => (next) => (action) => {
     case RESET_PASSWORD: {
       const state = store.getState();
       axios
-        .post('http://localhost:3000/api/password/reset', {
+        .post(`${process.env.URL_API}reset`, {
           username: state.auth.username,
           password: state.auth.password,
           confirmedPassword: state.auth.confirmedPassword,
           token: state.auth.resetPasswordToken,
         })
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.success) {
             store.dispatch(setMailhasBeenSentOrReset(response.data.success, response.data.message));
           }
