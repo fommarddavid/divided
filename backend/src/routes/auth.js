@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
+import { limit } from 'express-limit';
 
 import { User } from '../models';
 import controllers from '../controllers';
@@ -35,6 +36,10 @@ router.post('/login', [
       }
     });
   }),
-], controllers.auth.login);
+], limit({
+  max: 5,
+  period: 60 * 1000,
+  message: 'Too many requests'
+}) , controllers.auth.login);
 
 export default router;
