@@ -8,6 +8,12 @@ import middlewares from '../middlewares';
 
 const router = Router();
 
+router.get('/test', (req, res) => {
+  res.status(200).json({
+    message: "Hello Nok!"
+  });
+});
+
 router.post('/register', [
   body('username', 'Identifiant non valide')
     .not().isEmpty().trim().escape(),
