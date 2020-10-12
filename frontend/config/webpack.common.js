@@ -1,7 +1,15 @@
+const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const DotenvPlugin = require('dotenv');
 const paths = require('./paths');
+
+const env = DotenvPlugin.config({ path: `.env.${process.env.NODE_ENV}` }).parsed;
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(env[next]);
+  return prev;
+}, {});
 
 module.exports = {
   entry: [
@@ -31,6 +39,7 @@ module.exports = {
       favicon: `${paths.assets}/favicon.ico`,
       template: `${paths.assets}/index.html`,
     }),
+    new webpack.DefinePlugin(envKeys),
   ],
 
   module: {
