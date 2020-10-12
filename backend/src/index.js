@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
+import path from 'path';
 
 import routes from './routes';
 
@@ -15,6 +16,7 @@ app.use(compression());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 app.use('/api', routes.auth);
 app.use('/api/password', routes.password);
