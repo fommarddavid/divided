@@ -9,9 +9,7 @@ import middlewares from '../middlewares';
 const router = Router();
 
 router.get('/test', (req, res) => {
-  res.status(200).json({
-    message: "Hello Nok!"
-  });
+  res.send("Hello Nok!");
 });
 
 router.post('/register', [
