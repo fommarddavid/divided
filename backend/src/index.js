@@ -6,6 +6,7 @@ import compression from 'compression';
 
 import routes from './routes';
 
+const port = process.env.PORT || 5000;
 const app = express();
 
 app.use(helmet());
@@ -19,9 +20,7 @@ app.use('/api', routes.auth);
 app.use('/api/password', routes.password);
 app.use('/api/groups', routes.groups);
 
-let port = process.env.PORT;
-if (port == null || port == "") {
-  port = 8000;
-}
-app.listen(port);
+app.listen(port, function () {
+  console.log(`Express server listening on port ${port}`)
+})
 
