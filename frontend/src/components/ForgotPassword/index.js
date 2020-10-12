@@ -19,7 +19,7 @@ const ForgotPassword = ({
   const handleSubmit = (evt) => {
     evt.preventDefault();
     forgotPassword();
-    // console.log('send email');
+    console.log(process.env.URL_API);
   };
   return (
     <ForgotPasswordStyle onSubmit={handleSubmit}>
