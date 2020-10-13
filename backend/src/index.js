@@ -18,9 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.use('/api', routes.auth);
-app.use('/api/password', routes.password);
-app.use('/api/groups', routes.groups);
+app.use('/', routes.auth);
+app.use('/password', routes.password);
+app.use('/groups', routes.groups);
 
 app.listen(port, function () {
   console.log(`Express server listening on port ${port}`)
