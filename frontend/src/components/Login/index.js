@@ -19,6 +19,7 @@ const Login = ({
   const handleSubmit = (evt) => {
     evt.preventDefault();
     login();
+    console.log(process.env.URL_API);
   };
 
   return (

@@ -15,7 +15,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case LOGIN: {
       const state = store.getState();
       axios
-        .post(`${process.env.URL_API}login`, {
+        .post(`${process.env.URL_API}/login`, {
           email: state.auth.email,
           password: state.auth.password,
         })
@@ -34,7 +34,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case REGISTER: {
       const state = store.getState();
       axios
-        .post(`${process.env.URL_API}register`, {
+        .post(`${process.env.URL_API}/register`, {
           username: state.auth.username,
           email: state.auth.email,
           password: state.auth.password,
@@ -54,7 +54,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case FORGOT_PASSWORD: {
       const state = store.getState();
       axios
-        .post(`${process.env.URL_API}password/forgot`, {
+        .post(`${process.env.URL_API}/password/forgot`, {
           email: state.auth.email,
         })
         .then((response) => {
@@ -72,7 +72,7 @@ const authMiddleware = (store) => (next) => (action) => {
     case RESET_PASSWORD: {
       const state = store.getState();
       axios
-        .post(`${process.env.URL_API}password/reset`, {
+        .post(`${process.env.URL_API}/password/reset`, {
           username: state.auth.username,
           password: state.auth.password,
           confirmedPassword: state.auth.confirmedPassword,

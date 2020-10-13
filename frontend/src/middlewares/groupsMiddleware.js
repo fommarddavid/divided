@@ -27,7 +27,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
     case LOAD_GROUPS: {
       const token = sessionStorage.getItem('token');
       axios
-        .get(`${process.env.URL_API}groups`, {
+        .get(`${process.env.URL_API}/groups`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -46,7 +46,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
       const state = store.getState();
       const token = sessionStorage.getItem('token');
       axios
-        .get(`${process.env.URL_API}groups/${state.groups.selectedId}/details`, {
+        .get(`${process.env.URL_API}/groups/${state.groups.selectedId}/details`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -74,7 +74,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
       // console.log(token);
       axios({
         method: 'post',
-        url: `${process.env.URL_API}groups`,
+        url: `${process.env.URL_API}/groups`,
         data: {
           name: state.groups.groupName,
         },
@@ -101,7 +101,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
       const groupId = state.groups.selectedId;
       axios({
         method: 'delete',
-        url: `${process.env.URL_API}groups/${groupId}`,
+        url: `${process.env.URL_API}/groups/${groupId}`,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -119,7 +119,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
       const groupId = state.groups.selectedId;
       axios({
         method: 'post',
-        url: `${process.env.URL_API}groups/${groupId}/members`,
+        url: `${process.env.URL_API}/groups/${groupId}/members`,
         data: {
           name: state.groups.newMemberName,
         },
@@ -148,7 +148,7 @@ const groupsMiddleware = (store) => (next) => (action) => {
       const groupId = state.groups.selectedId;
       axios({
         method: 'post',
-        url: `${process.env.URL_API}groups/${groupId}/expenses`,
+        url: `${process.env.URL_API}/groups/${groupId}/expenses`,
         data: {
           newExpenseName: state.groups.newExpenseName,
           newExpenseValue: state.groups.newExpenseValue,
