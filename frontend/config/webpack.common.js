@@ -36,7 +36,7 @@ module.exports = {
       ],
     }),
     new HtmlWebpackPlugin({
-      favicon: `${paths.assets}/favicon.ico`,
+      favicon: `${paths.assets}/soleil.svg`,
       template: `${paths.assets}/index.html`,
     }),
     new webpack.DefinePlugin(envKeys),
